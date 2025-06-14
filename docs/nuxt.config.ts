@@ -1,62 +1,83 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: ['@nuxt/ui-pro'],
-
   modules: [
+    '@nuxt/eslint',
+    '@nuxt/image',
+    '@nuxt/ui-pro',
     '@nuxt/content',
-    '@nuxt/ui',
-    '@nuxthq/studio',
-    '@nuxtjs/fontaine',
-    '@nuxtjs/google-fonts',
     'nuxt-og-image',
+    'nuxt-llms',
     '../src/module',
   ],
 
-  hooks: {
-    // Define `@nuxt/ui` components as global to use them in `.md` (feel free to add those you need)
-    'components:extend': (components) => {
-      const globals = components.filter((c) => ['UButton', 'UIcon'].includes(c.pascalName));
-
-      globals.forEach((c) => (c.global = true));
-    },
-  },
-
-  ui: {
-    icons: ['heroicons', 'simple-icons'],
-  },
-
-  // Fonts
-  fontMetrics: {
-    fonts: ['DM Sans'],
-  },
-
-  googleFonts: {
-    display: 'swap',
-    download: true,
-    families: {
-      'DM+Sans': [400, 500, 600, 700],
-    },
-  },
-
-  routeRules: {
-    '/api/search.json': { prerender: true },
-  },
-
   devtools: {
-    enabled: true,
+    enabled: true
   },
 
-  typescript: {
-    strict: false,
+  css: ['~/assets/css/main.css'],
+
+  content: {
+    build: {
+      markdown: {
+        toc: {
+          searchDepth: 1
+        }
+      }
+    },
+    experimental: { sqliteConnector: 'native' }
   },
 
-  uiPro: {
-    license: 'oss',
+  future: {
+    compatibilityVersion: 4
   },
 
-  build: {
-    transpile: ['shiki'],
+  compatibilityDate: '2024-07-11',
+
+  nitro: {
+    prerender: {
+      routes: [
+        '/'
+      ],
+      crawlLinks: true
+    }
   },
 
-  compatibilityDate: '2025-04-11',
-});
+  eslint: {
+    config: {
+      stylistic: {
+        commaDangle: 'never',
+        braceStyle: '1tbs'
+      }
+    }
+  },
+
+  icon: {
+    provider: 'iconify'
+  },
+
+  llms: {
+    domain: 'https://docs-template.nuxt.dev/',
+    title: 'Nuxt Docs Template',
+    description: 'A template for building documentation with Nuxt UI Pro and Nuxt Content.',
+    full: {
+      title: 'Nuxt Docs Template - Full Documentation',
+      description: 'This is the full documentation for the Nuxt Docs Template.'
+    },
+    sections: [
+      {
+        title: 'Getting Started',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: 'LIKE', value: '/getting-started%' }
+        ]
+      },
+      {
+        title: 'Essentials',
+        contentCollection: 'docs',
+        contentFilters: [
+          { field: 'path', operator: 'LIKE', value: '/essentials%' }
+        ]
+      }
+    ]
+  }
+})
